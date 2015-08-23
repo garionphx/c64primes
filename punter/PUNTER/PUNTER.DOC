@@ -1,0 +1,792 @@
+ ============================================================================
+                         Punter Protocol Version 1.04
+                               (C)Copyright 1989
+                             Data Technology Corp.
+                             All Rights Reserved.
+ ============================================================================
+  
+      This is a basic documentation to help the unregistered user get the
+ protocol installed in his or her system with greater ease.  However, more
+ detailed documentation, and a more advanced protocol is included on the
+ registered disk.  You will also be entitled to low-cost updates of
+ the documentation and the protocol itself.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04          Table of Contents                           1
+ ============================================================================
+  
+      I. Basic Overview .............................................. 2
+           Shareware Contract ........................................ 2
+           System Requirements ....................................... 2
+  
+     II. Installation ................................................ 3
+  
+    III. Setup ....................................................... 4
+           Execution ................................................. 4
+           Options ................................................... 4
+           Uploading and Downloading ................................. 6
+           ERRORLEVELs ............................................... 7
+  
+     IV. Registration ................................................ 8
+           How to Register ........................................... 8
+           Registration Form ......................................... 9
+           Update Request Form ....................................... 10
+  
+     CREDITS ......................................................... 11
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04        I. Basic Overview                              2
+ ============================================================================
+  
+      This new protocol standard for the IBM has been implemented to allow
+ greater compatibility of IBM and Commodore machines.  Since Punter has been
+ a standard on the Commodore for years, it has become customary for Commodore
+ owners to use this reliable protocol.  This protocol offers a bridge between
+ Commodore and IBM machines.
+  
+  
+ 1. Shareware Contract
+ ---------------------
+  
+      Please feel free to implement this external protocol in your bulletin
+ board system or on your favorite terminal, but please note that this
+ software is by no means free.  It is the result of dedicated time and hard
+ work.  Please support the programmers in their endeavors to bring you low-
+ cost, quality software.  As you will note, the registration fee is quite
+ reasonable.  This program is a part of Data Technology Corporation's new
+ shareware or user-supported program.  It is designed to offer new software
+ to the consumer on a trial basis.  If you do not feel that the software
+ meets your needs within a 30-day period, you obviously will not be required
+ to register, however, if you do use this product, please register and
+ support the programmers that have brought you this quality software.  Also,
+ you are encouraged to distribute the shareware product as you wish as long
+ as no part of the program or documentation has been altered.
+  
+  
+ 2. System Requirements
+ ----------------------
+  
+      This program has been designed to run on the IBM Personal Computer and
+ compatible PC clones.  This program is only guaranteed to run under
+ Microsoft DOS or IBM Personal Computer DOS on an IBM PC, XT, AT, or 100%
+ Compatible Clone, although it may run on a variety of systems.
+  
+ Basic System Requirements:
+  
+   - IBM PC/XT/AT (Or Compatible Clone)
+   - 64K RAM
+   - Serial/Asynchronous Port (COM1 - COM4)
+   - Modem/Null Modem
+   - 1 Double Density Disk Drive or Better
+  
+ The system described above will allow you to run the protocol, but you will
+ most probably need a communications package or bulletin board system to
+ fully utilize the protocol.  Memory requirements will increase well above
+ 64K when a communications program is installed.  A Modem is required if you
+ wish to transfer data with dial-up systems.  However, if you only wish to
+ transfer data between computers, a null modem (basically an interconnecting
+ cable between serial ports) will be required.  You will also need some sort
+ of recording media for the program and files to be sent or received.  A
+ single-sided, double-density disk is the basic requirement.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04          II. Installation                             3
+ ============================================================================
+  
+      Installation of this protocol is pretty straightforward.  You will be
+ required to do the following steps:
+  
+      - Copy the program "PUNTER.EXE" (Included With This Documentation) to
+        the desired diskette or directory where you will execute it.  If you
+        want, you may make a special directory for this purpose.  If you do
+        not know how to do this, please consult you DOS documentation.
+  
+      - If you wish, you may also have a directory for uploads, and a
+        directory for downloads.  If you have a diskette based system, you
+        must either use the same diskette with the program on it, or use
+        another diskette if you have more than one drive.  It will be
+        explained how you can do this for either system.
+  
+      - You may also be required to set up batch files for your specific
+        system.  It will be explained later how to create batch files for
+        your needs.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04             III. Setup                                4
+ ============================================================================
+  
+      The following information is designed to help you get the protocol
+ working on your system.  It will center on specific requirements and
+ needs of the user.  Examples will also be provided so that you may see how
+ to install the program.
+  
+  
+ 1. Execution
+ ------------
+  
+      To execute the protocol, you will need to look at your system and
+ requirements.  On many systems, you will be required to make a batch file so
+ a bulletin board system or communications package will be able to utilize
+ the protocol correctly.  Examples for Procomm Plus and Telix will be
+ provided since they are the most prominent packages.  If you wish to install
+ it on a bulletin board system, please consult the documentation for
+ installation of external protocols.
+  
+  
+ 2. Options
+ ----------
+      In order to get a list of the command line parameters that the protocol
+ will accept, type the name "PUNTER" at the prompt with no command line
+ parameters.  Make sure that the program "PUNTER.EXE" is on the current disk
+ and in the current directory.
+  
+   You type:
+  
+      Punter <return>
+  
+   It responds:
+  
+      Punter* Protocol Ver. 1.04
+      (C)Copyright 1989
+      Data Technology Corporation
+      All Rights Reserved.
+  
+      * MS-DOS Implementation of Steve
+      Punter's Original "C1" Protocol.
+  
+      USAGE:
+      PUNTER [S] [R] [Z<BlockSize>] [P<PortNum>] [B<BaudRate>] FileName
+  
+      Command Line Parameters:
+      S - Send Punter
+      R - Receive Punter
+      P - Define Port Number (1-4)
+      B - Define Baud Rate (300-115200)
+      Z - Maximum Block Size (40-255)
+  
+      The last command line parameter will always be the filename.
+  
+      Transfer Aborted.
+      Exit Code: 1
+  
+ This shows you the possible combinations in which you may use the protocol.
+ Each command line parameter must be explained.
+  
+  
+ The "S" or "SEND" command line parameter tells the protocol that it will be
+ sending a file rather than receiving one.  If you are sending a file, this
+
+
+ ============================================================================
+ Punter Protocol 1.04             III. Setup                                5
+ ============================================================================
+  
+ is a required command line parameter.  To use this parameter, you will be
+ required to execute the file like this:
+  
+      PUNTER S <Other Parameters Will Follow>
+  
+ This will initiate the protocol and put it in send mode.
+  
+  
+ The "R" or "RECEIVE" command line parameter tells the protocol that it will
+ be receiving a file rather than sending one.  If you are receiving a file,
+ this is a required command line parameter.  To use this parameter you will
+ be required to execute the file line this:
+  
+      PUNTER R <Other Parameters Will Follow>
+  
+ This will initiate the protocol and put it in receive mode.
+  
+  
+ The "P" or "DEFINE PORT NUMBER" parameter defines the communications port
+ that the protocol will attempt to use.  The current implementation of this
+ protocol supports communications ports one through four. (COM1 - COM4)
+ Please consult the documentation for your serial port if you are not sure
+ the number of your communications port.  On many serial ports you will be
+ required to SET the communications port number with DIP switches or jumpers.
+ If you are installing you serial port for the first time, it is suggested
+ that you use COM1 or COM2 since they are the most compatible settings.  To
+ set up the protocol to send a file using COM2 or port number two, you must
+ execute the file like this:
+  
+      PUNTER S P2 <Other Parameters Will Follow>
+  
+ If you are planning to use COM1, you will not be required to include this
+ command line parameter.  The protocol will assume that you are using COM1.
+  
+  
+ The "B" or "DEFINE BAUD RATE" parameter specifies the baud rate at which you
+ want the protocol to run.  You may have baud rates from 300 to 115200 baud.
+ Your serial port and modem must both be able to support the specified baud
+ rate.  To set the protocol to receive a file at 1200 baud, execute the
+ program like this:
+  
+      PUNTER R B1200 <Other Parameters Will Follow>
+  
+ If you wish, you may not include this parameter.  If you do not include the
+ baud rate parameter, the protocol will use the baud rate that the serial
+ port was previously initialized to.  If the port has not already been
+ initialized, it is suggested that you use this parameter.
+  
+  
+ The "Z" or "DEFINE MAX BLOCK SIZE" parameter tells the protocol the maximum
+ block size to use.  This is the number of bytes that the protocol will send
+ in each "packet" of data.  If line conditions are good, you will most likely
+ use a large block size since the transfer will be much faster.  However, if
+ line conditions are bad, a small block size should be used to increase
+ reliability.  For most purposes, a large block size will do!  Allowed block
+ sizes are 40 to 255 bytes per block.  This parameter only has meaning when
+ you are sending a file.  If you are receiving a file, the SENDER will decide
+ the proper block size.  To send a file with 100 bytes per block, do the
+ following:
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04             III. Setup                                6
+ ============================================================================
+  
+      PUNTER S Z100 <Other Parameters Will Follow>
+  
+ For most purposes you will use a block size of 255 since it is the fastest.
+ If you wish to use a block size of 255, you will not be required to include
+ this parameter since it defaults to a block size of 255 bytes per block.
+  
+  
+ The "FILENAME" parameter defines the file that is to be received or sent.
+ This parameter is MANDATORY.  If you fail to include a file to be sent or
+ received, the transfer will be aborted.  You may also specify a drive and
+ directory with the filename if the file is not in the current directory or
+ on the current drive.  To send a file called "FILE.ARC" on drive D in the
+ directory "\UPLOADS," do the following:
+  
+      PUNTER S D:\UPLOADS\FILE.ARC
+  
+ As you can see, the drive letter comes first, the directory comes second,
+ and the actual filename comes last.  To receive a file called "THISFILE.ARC"
+ and place it in the current directory, do the following:
+  
+      PUNTER R THISFILE.ARC
+  
+ This will place the file in the current directory on the current drive.  If
+ you wish to have the file placed on a different drive and retain the drive's
+ current directory, only specify the drive like this:
+  
+      PUNTER R D:THISFILE.ARC
+  
+ This will put the file "THISFILE" on drive D in its current directory.
+  
+  
+ 3. Uploading and Downloading
+ ----------------------------
+  
+      If you are running under a system that uploads and downloads, you will
+ be required (in many instances) to create a batch file to process special
+ data that is sent by the main program.  You will need a separate file for
+ uploading and downloading.  Procomm Plus (a very popular communications
+ package) would use the following batch file for downloading:
+  
+      PUNTER R P2 %1
+  
+ The "%1" is the filename that will be provided by the communications
+ package.  As you can see, the port is set to use COM2.  The batch file for
+ uploading would look like this:
+  
+      PUNTER S P2 %1
+  
+ The "%1" again is the filename that will be provided by the communications
+ package.  If you wished to use a port besides COM2, you would simply specify
+ a different port number.
+  
+ On Telix, the program also will send the port and baud rate.  Although, as
+ mentioned earlier, the baud rate will default to the last baud rate used, it
+ is sometimes good to specify the baud rate.  The following batch file would
+ handle downloading on Telix 3.11:
+  
+      PUNTER R P%2 B%1 %3
+  
+ The %2 would be the port as sent by the package, the %1 would be the baud
+
+
+ ============================================================================
+ Punter Protocol 1.04             III. Setup                                7
+ ============================================================================
+  
+ rate, and the %3 would be the specified filename.  For uploading, you would
+ use the following batch file:
+  
+      PUNTER S P%2 B%1 %3
+  
+ Again, the %1, %2, and %3 would be the specified parameters as sent by the
+ terminal.
+  
+ A test upload in direct mode or with your batch file should yield the
+ following if you send the file D:\MODEM\PUNTER.ARC:
+  
+      Punter Send Session Beginning.
+      Drive: D:
+      Path: \MODEM
+      File: PUNTER.ARC
+      Communications Port: 1
+      Baud Rate: 1200
+      Block Size: 255
+  
+ If a carrier has been established, the following will also be displayed:
+  
+      File Size: 21561
+      Est. Time: 5 Min(s)
+  
+ Certain parameters will vary under certain conditions.
+  
+  
+ 3. ERRORLEVELs
+ --------------
+  
+      Depending on the result of the send or receive session, DOS's
+ ERRORLEVEL parameter will be set.  If the transfer is successful, then the
+ ERRORLEVEL will be set to 0.  If it is unsuccessful, it will be set to 1.
+ These are the standard settings for most systems that utilize ERRORLEVELs to
+ find out if the transfer was successful or not.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04          IV. Registration                             8
+ ============================================================================
+  
+ 1. How to Register
+ ------------------
+  
+      If you use this product, you are encouraged to register.  Registration
+ offers many benefits.  Initially, you will receive a file containing
+ explicit documentation on this product.  Secondly, you will be entitled to
+ low-cost updates.  The updates will also contain new documentation.  To
+ register, please print this document, fill out the REGISTRATION form, and
+ mail it to the address given below.  There is also an UPDATE form included
+ to show you how updates are requested.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04          IV. Registration                             9
+ ============================================================================
+  
+ 2. Registration Form
+ --------------------
+  
+          Product          : IBM Punter Protocol
+          Form Date        : 01/24/89
+          System Type      : IBM PC or Compatible Clone
+          Software Media   : 1 Diskette
+          Hardware Req.    : Base System
+                             64K RAM
+                             1 Double Sided/Double Density Disk Drive
+                             Serial Port (COM1-COM4)
+                             Modem
+          Registration Fee : $15.00
+  
+          Mail Product To:
+  
+          _________________________________
+          Name
+  
+          _________________________________
+          Address
+  
+          _________________________________
+          City           State          Zip
+  
+  
+          Please enclose fee in check or money order as stated above,
+          and fill out your name and address in full.  You will receive
+          the product stated above 7 - 14 days after your form has been
+          received.  Thank you.
+  
+          Mail To:
+  
+          DATA TECHNOLOGY CORPORATION
+          1383 Collins Rd.
+          Colorado Springs, CO 80920
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04          IV. Registration                            10
+ ============================================================================
+  
+ 3. Update Request Form
+ ----------------------
+  
+          Product          : IBM Punter Protocol (Update)
+          Form Date        : 01/24/89
+          System Type      : IBM PC or Compatible Clone
+          Software Media   : 1 Diskette
+          Hardware Req.    : Base System
+                             64K RAM
+                             1 Double Sided/Double Density Disk Drive
+                             Serial Port (COM1-COM4)
+                             Modem
+          Update Fee       : $5.00
+  
+          Mail Update To:
+  
+          _________________________________
+          Name
+  
+          _________________________________
+          Address
+  
+          _________________________________
+          City           State          Zip
+  
+  
+          Please enclose fee in check or money order as stated above,
+          and fill out your name and address in full.  You will receive
+          the update as stated above 7 - 14 days after your form has
+          been received.  Thank you.
+  
+          Mail To:
+  
+          DATA TECHNOLOGY CORPORATION
+          1383 Collins Rd.
+          Colorado Springs, CO 80920
+  
+          NOTE: To receive this update, you MUST be on record as a
+          registered user.  If the address is not that of a registered
+          user, personal checks will not be cashed and cash will be
+          sent to the return address.  Thank you.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+ ============================================================================
+ Punter Protocol 1.04                 Credits                              11
+ ============================================================================
+  
+   o IBM is a registered trademark of International Business Machines
+     Corporation.
+  
+   o Punter is an MS-DOS implementation of Steve Punter's original "C1"
+     protocol.
+  
+   o Procomm Plus is a registered trademark of Datastorm Technology, Inc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

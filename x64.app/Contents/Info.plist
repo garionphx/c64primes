@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleExecutable</key>
+     <string>x64</string>
+  <key>CFBundleGetInfoString</key>
+     <string>x64 2.4 (C) 2012 The VICE Team</string>
+  <key>CFBundleIconFile</key>
+     <string>x64.icns</string>
+  <key>CFBundleIdentifier</key>
+     <string>org.viceteam.x64</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+     <string>6.0</string>
+  <key>CFBundleName</key>
+     <string>x64</string>
+  <key>CFBundlePackageType</key>
+     <string>APPL</string>
+  <key>CFBundleSignature</key>
+     <string>VICE</string>
+  <key>CFBundleVersion</key>
+     <string>2.4</string>
+  <key>CFBundleDocumentTypes</key><array> <dict><key>CFBundleTypeExtensions</key><array><string>x64</string></array> <key>CFBundleTypeIconFile</key><string>floppy525</string> <key>CFBundleTypeName</key><string>x64 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>p64</string></array> <key>CFBundleTypeIconFile</key><string>VICEFile</string> <key>CFBundleTypeName</key><string>p64 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>g64</string></array> <key>CFBundleTypeIconFile</key><string>floppy525</string> <key>CFBundleTypeName</key><string>g64 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>d64</string></array> <key>CFBundleTypeIconFile</key><string>floppy525</string> <key>CFBundleTypeName</key><string>d64 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>d71</string></array> <key>CFBundleTypeIconFile</key><string>floppy525</string> <key>CFBundleTypeName</key><string>d71 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>d81</string></array> <key>CFBundleTypeIconFile</key><string>floppy525</string> <key>CFBundleTypeName</key><string>d81 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>t64</string></array> <key>CFBundleTypeIconFile</key><string>tape</string> <key>CFBundleTypeName</key><string>t64 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>tap</string></array> <key>CFBundleTypeIconFile</key><string>tape</string> <key>CFBundleTypeName</key><string>tap VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>prg</string></array> <key>CFBundleTypeIconFile</key><string>VICEFile</string> <key>CFBundleTypeName</key><string>prg VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>p00</string></array> <key>CFBundleTypeIconFile</key><string>VICEFile</string> <key>CFBundleTypeName</key><string>p00 VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>crt</string></array> <key>CFBundleTypeIconFile</key><string>cartridge</string> <key>CFBundleTypeName</key><string>crt VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> <dict><key>CFBundleTypeExtensions</key><array><string>reu</string></array> <key>CFBundleTypeIconFile</key><string>VICEFile</string> <key>CFBundleTypeName</key><string>reu VICE File</string> <key>CFBundleTypeRole</key><string>Editor</string></dict> </array></dict>
+</plist>

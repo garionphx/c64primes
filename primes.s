@@ -192,6 +192,7 @@ next_number:
     lda #$00
     sta dividend + 3
 
+    // Take the current number and divide by 20
     jsr divide
 
     // Save the quotient to the curr_index, for later use
@@ -291,11 +292,11 @@ no_mask_carry:
 
 r_we_done:
     lda bit_index
-    cmp #<[end_bits - 1]
-    bcc r_we_done_2  // < Both of these mean we continue
-    beq r_we_done_2  // = Both of these mean we continue
 
-    jmp find_next_num
+    cmp #<[end_bits + 1]
+    bcs find_next_num  // < Both of these mean we continue
+    
+
 
 r_we_done_2:
 
@@ -320,15 +321,15 @@ find_next_num:
     ldx curr_mask_index
 
 next_num_loop:
-    inx 
-    inx
-    cpx #$14
-    bcc no_mask_carry_2  
+    inx                         // 2
+    inx                         // 2
+    cpx #$14                    // 2
+    bcc no_mask_carry_2         // 2
 
     // No clc needed here
-    txa
-    sbc #$14
-    tax
+    txa                         // 2
+    sbc #$14                    // 2
+    tax                         // 2
 
     lda curr_index
     adc #$00
@@ -447,6 +448,7 @@ b_we_done:
 b_we_done_2:
     jmp next_number
 
+break:
 summit: 
     // Display the message
     lda #$17 // Y
@@ -503,11 +505,15 @@ no_mask_carry_3:
 
 r_we_done_3:
     lda curr_index
-    cmp #<[end_bits - 1]
-    bcc r_we_done_4  // < Both of these mean we continue
-    beq r_we_done_4  // = Both of these mean we continue
+//    cmp #<[end_bits - 1]
+//    bcc r_we_done_4  // < Both of these mean we continue
+//    beq r_we_done_4  // = Both of these mean we continue
+//    jmp end_prg
 
-    jmp end_prg
+    cmp #<[end_bits]
+    bcs end_prg  // < Both of these mean we continue
+
+
 
 r_we_done_4:
 
@@ -563,7 +569,6 @@ r_we_done_4:
     jmp next_num_loop_2
 
 end_prg:
-
     // copy the zp back
     sei
 
@@ -582,7 +587,6 @@ end_prg:
     lda #$37
     sta $01
     cli
-break:
     rts
 
 display_curr:

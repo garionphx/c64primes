@@ -1,0 +1,35 @@
+Includes you need to have in your path:
+
+Name               Path setting
+
+CC65_SRC           <cc65sourcepath>
+CC65_INC           <cc65sourcepath>/include
+
+
+Tools you need to have in your path:
+
+Name               Source                                        Path setting
+
+cc65source         http://www.cc65.org/                          <cc65source>
+ca65               http://www.cc65.org/                          <cc65path>/bin
+ld65               http://www.cc65.org/                          <cc65path>/bin
+ar65               http://www.cc65.org/                          <cc65path>/bin
+
+java               http://java.sun.com/                          <javapath>/bin
+javac              http://java.sun.com/                          <javapath>/bin
+
+gcc                http://gcc.gnu.org/                           <gccpath>
+
+c1541              http://viceteam.org/                          <vicepath>
+x64                http://viceteam.org/                          <vicepath>
+
+bb (ByteBoozer)    http://noname.c64.org/csdb/release/?id=33093  <bbpath>
+pucrunch           http://www.cs.tut.fi/~albert/Dev/pucrunch/    <pupath>
+exomizer           http://hem.bredband.net/magli143/exo/         <exopath>
+
+perl                                                             <perlpath>
+
+
+*nix-specific tools you need:
+
+make

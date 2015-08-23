@@ -1,0 +1,486 @@
+// Prime number finder. First version will seive the primes up to 100.
+
+// A basic loader. Generates:
+//      10 SYS (2064)
+
+.pc = $0801 "Basic upstart"
+:BasicUpstart(start)
+
+// A few vars
+.var bits = $0b00
+.var end_bits = bits + 1000000 / 20
+.var curr = $19 // some random place in the zero page that seems safe
+//.var accum = $1D
+//.var accum_2 = $67
+//.var adder_1 = $57 // 58 59 5a
+//.var adder_2 = adder_1 + 4 // 5b 5c 5d 5e
+//.var adder_3 = adder_2 + 4 // 5f 60 61 62
+//.var adder_4 = adder_3 + 4 // 63 64 65 66
+.var adder_index = $02
+.var bit_mask_index = $41
+.var bit_index = $43
+
+.var index_adder_1 = $57
+.var index_adder_2 = $59
+.var index_adder_3 = $5b
+.var index_adder_4 = $5d
+
+.var mask_adder_1 = $5f
+.var mask_adder_2 = $60
+.var mask_adder_3 = $61
+.var mask_adder_4 = $62
+
+.var BIT7 = $fb
+.var BIT3 = $fc
+
+.var bit_mask = $87 // 20 bytes!
+
+// input to bcd2bin. output is the bit_index
+.var bcd2bin_in = $49 // 49 4a 4b 4c
+
+.var divide_amount = $14
+
+// Stuff for divide routine
+.var divisor = $d8 // 2 bytes
+.var dividend = divisor + 2 // 4 bytes
+.var div_scratch = dividend + 4
+.var div_carry = div_scratch + 1
+.var quotient = dividend
+.var remainder = dividend + 2
+
+.var bin_accum = $22
+
+.pc = $0810 // 2064, Enough room over the BasicStart
+break:
+start:
+    // Prep some vars
+    lda #$80
+    sta BIT7
+    lda #$08
+    sta BIT3
+
+    // Turn off the basic rom to get us enough memory
+    lda $01
+    and #$fe
+    sta $01
+
+    // Clear some memory
+    lda #$FF
+    ldx #>end_bits - 1
+outer_clear_mem:
+    stx clear_mem + 3 // self modding code.
+    ldy #$00
+clear_mem:
+    dey
+    sta bits,y // Self modding code.
+    bne clear_mem
+    
+    dex
+    cpx #>bits - 1
+    bne outer_clear_mem
+
+    // Copy 20 bytes for the bit mask.
+    ldx #$00
+copy_table:
+    lda bit_mask_table, x
+    sta bit_mask, x
+    inx
+    cpx #$14 // compare to 20
+    bne copy_table
+
+    lda #divide_amount
+    sta divisor
+    lda #$00
+    sta divisor + 1
+
+    // We know that 1 is not prime, so lets turn that bit off now.
+    lda #$FE
+    sta bits
+
+    // Some initialization
+    lda #$00
+    sta bit_index
+
+    lda #$03
+    sta bit_mask_index
+
+    lda #>bits
+    sta bit_index + 1
+
+    // Start with 3 as the first number to seive
+    lda #$03 
+    sta curr
+    lda #$00
+    sta curr + 1
+    sta curr + 2
+    sta curr + 3
+    sta bin_accum + 3
+next_number:
+    // Copy the number to the accum.
+
+    // Add the 'curr' to the accum num to get a 2x of the curr in 
+    // accum. Store that in adder_1, adder_3 and adder_4
+    lda curr
+    asl
+    sta bin_accum
+    sta dividend
+
+    lda curr + 1
+    rol
+    sta bin_accum + 1
+    sta dividend + 1
+
+    lda curr + 2
+    rol
+    sta bin_accum + 2
+    sta dividend + 2
+
+    // Save these so that they are zero
+    lda #$00
+    sta bin_accum + 3
+    sta dividend + 3
+
+    jsr divide
+
+    // Store the quotient in the index_adder
+    lda quotient
+    sta index_adder_1
+    sta index_adder_3
+    sta index_adder_4
+
+    lda quotient + 1
+    sta index_adder_1 + 1
+    sta index_adder_3 + 1
+    sta index_adder_4 + 1
+
+    // store the remainder in the mask_adders
+    lda remainder 
+    sta mask_adder_1
+    sta mask_adder_3
+    sta mask_adder_4
+
+    // Now add the value in adder_1 (2xcurr) to accum, to get 4x, and store 
+    // it adder_2
+    clc
+    lda bin_accum
+    rol
+    sta dividend
+
+    lda bin_accum + 1
+    rol
+    sta dividend + 1
+
+    lda bin_accum + 2
+    rol
+    sta dividend + 2
+
+    // Convert these adders to a index_adder and mask_adder with division
+    jsr divide
+
+    // Store the quotient in the index_adder
+    lda quotient
+    sta index_adder_2
+
+    lda quotient + 1
+    sta index_adder_2 + 1
+
+    // store the remainder in the mask_adders
+    lda remainder 
+    sta mask_adder_2
+
+    // Reset the accumulator back to curr
+    lda curr
+    sta bin_accum
+    lda curr  + 1
+    sta bin_accum + 1
+    lda curr  + 2
+    sta bin_accum + 2
+
+    // Now we have our adders. Lets start adding.
+    lda #$FF
+    sta adder_index
+
+add_loop:
+    // Determine which adder we're using.
+    inc adder_index
+
+    // Do the bin version first
+    lda adder_index
+    and #$03
+
+    // Store this, its for the index_adder
+    tay
+    tax
+
+    // Figure out the mask_index
+    clc
+    lda mask_adder_1, X
+    adc bit_mask_index
+    sta bit_mask_index
+
+    // Are we >= 20
+    cmp #$14  
+    bcc no_mask_carry  
+
+    // Yes, subtract 20 from this, and carry to the bit_index
+    // Note that carry flag is set here. 
+    sbc #$14
+    sta bit_mask_index
+    clc
+    lda #$01
+    adc bit_index
+    sta bit_index
+    bcc no_mask_carry
+    inc bit_index + 1
+
+    // Now figure out the bit_index
+no_mask_carry:
+    tya
+    asl // mulitply by 2
+    tax
+
+    // dont need a clc here, as it should never be set when we get here.
+    lda index_adder_1, X
+    adc bit_index
+    sta bit_index
+    lda index_adder_1 + 1, X
+    adc bit_index + 1
+    sta bit_index + 1
+
+    // Are we done? We already have the byte we want in there, no need to load
+    cmp #>end_bits
+    bcc r_we_done_2   // <, if its less than, skip the second test
+    beq r_we_done     // =, need to do the second test
+    jmp find_next_num
+
+r_we_done:
+    lda bit_index
+    cmp #<end_bits
+    bcc r_we_done_2  // < Both of these mean we continue
+    beq r_we_done_2  // = Both of these mean we continue
+
+    jmp find_next_num
+
+r_we_done_2:
+
+    // We now have the index we need, and an offset to our bit mask. Turn that 
+    // bit off.
+    ldy #$00
+    ldx bit_mask_index
+    lda bit_mask,X
+    and (bit_index),y
+    sta (bit_index),y
+
+    jmp add_loop
+
+find_next_num:
+    // Find the bit/mask index for the curr num
+    lda curr
+    sta dividend
+    lda curr     + 1
+    sta dividend + 1
+    lda curr     + 2
+    sta dividend + 2
+
+    jsr divide
+
+    clc
+    lda #>bits
+    adc quotient + 1
+    sta quotient + 1
+
+    // Quotient now has the bit index to the curr num,
+    // remainder has the mask index
+    ldy #$00
+    ldx remainder
+next_num_loop:
+    inx 
+    inx
+
+    cpx #$14
+    bcc no_mask_carry_2  
+
+    // No clc needed here
+    txa
+    sbc #$14
+    tax
+    clc
+    lda quotient
+    adc #$01
+    sta quotient
+    bcc no_mask_carry_2
+    inc quotient + 1
+
+no_mask_carry_2:
+    lda bit_mask, X
+    beq next_num_loop // skip 0's
+
+    // Now check the bit in that location
+    ora (quotient), Y
+
+    cmp #$FF
+    bne next_num_loop
+
+    // Store Y in the remainer
+    stx remainder
+    stx bit_mask_index
+
+    lda quotient
+    sta bit_index
+    lda quotient    + 1
+    sta bit_index   + 1
+
+
+    // Calc the number from the index and mask.
+    // First sub the offset from the quotient + 1
+    lda #>bits
+    sec
+    sbc quotient + 1
+    sta quotient + 1
+
+    lda quotient
+    sta curr
+    lda quotient + 1
+    sta curr + 1
+
+    // Multiply by 16
+    clc
+    asl curr 
+    rol curr + 1
+    rol curr + 2
+    rol curr + 3
+    asl curr 
+    rol curr + 1
+    rol curr + 2
+    rol curr + 3
+    asl curr 
+    rol curr + 1
+    rol curr + 2
+    rol curr + 3
+    asl curr 
+    rol curr + 1
+    rol curr + 2
+    rol curr + 3
+
+    // Times 4
+    asl quotient
+    rol quotient + 1
+
+    asl quotient
+    rol quotient + 1
+
+    // Add in the mask index
+    clc
+    lda remainder
+    sta bit_mask_index
+    adc quotient
+    sta quotient
+    lda #$00
+    adc quotient + 1
+    sta quotient + 1
+
+    // Now add'em
+    clc
+    lda curr
+    adc quotient
+    sta curr
+    lda curr + 1
+    adc quotient +1
+    sta curr + 1
+    lda #$00     // continue in case we carry?
+    adc curr + 2
+    sta curr + 2
+    lda #$00     // continue in case we carry?
+    adc curr + 3
+    sta curr + 3
+
+    // Have we hit the square root?
+    lda curr +1
+    cmp #$03
+    bcc b_we_done_2   // <, if its less than, skip the second test
+    beq b_we_done     // =, need to do the second test
+    jmp end_prg
+
+b_we_done:
+    lda curr
+    cmp #$e8
+    bcc b_we_done_2  // < Both of these mean we continue
+    beq b_we_done_2  // = Both of these mean we continue
+    jmp end_prg
+        
+b_we_done_2:
+    jmp next_number
+
+end_prg:    
+    rts
+
+
+divide:  
+        ldx     #$11    // over at the same time as shifting the answer in, the
+                        // operation must start AND finish with a shift of the
+                        // low cell of the dividend (which ends up holding the
+                        // quotient), so we start with 17 (11H) in X.
+        clc
+div_loop:  
+        lda     #$00
+        sta     div_carry       // Zero old bits of CARRY so subtraction works right.
+
+        rol     divisor+2       // -JMS- Move low cell of dividend left one bit, also shifting
+        rol     divisor+3       // -JMS- answer in. The 1st rotation brings in a 0, which later
+
+                                // gets pushed off the other end in the last rotation.
+        dex                     //
+        beq     div_end         // Branch to the end if finished.
+                                //
+        rol     divisor+4       // -JMS- Shift high cell of dividend left one bit, also
+        rol     div_carry       // Store old high bit of dividend in CARRY.  (For STZ
+                                // one line up, NMOS 6502 will need LDA #0, STA CARRY.)
+            
+        sec                     // See if divisor will fit into high 17 bits of dividend
+        lda     divisor+4       // -JMS- by subtracting and then looking at carry flag.
+        sbc     divisor         // First do low byte.
+        sta     divisor+6       // Save difference low byte until we know if we need it.
+        lda     div_carry       // Bit 0 of CARRY serves as 17th bit.
+        sbc     #$0             // Complete the subtraction by doing the 17th bit before
+        bcc     div_loop        // determining if the divisor fit into the high 17 bits
+                                // of the dividend.  If so, the carry flag remains set.
+        lda     divisor+6       // If divisor fit into dividend high 17 bits, update
+        sta     divisor+4       // -JMS- dividend high cell to what it would be after
+        bcs     div_loop
+oflo: 
+        lda     #$FF            // If overflow occurred, put FF
+        sta     divisor+2       // in remainder low byte
+        sta     divisor+3       // and high byte,
+        sta     divisor+4       // and in quotient low byte
+        sta     divisor+5       // and high byte.
+
+div_end:rts
+
+
+// I should see if I find space in the zero page for this. 20 bytes
+bit_mask_table:
+.byte $00,          // 0
+      %11111110,    // 1
+      $00,          // 2
+      %11111101,    // 3
+      $00,          // 4
+      $00,          // 5
+      $00,          // 6
+      %11111011,    // 7
+      $00,          // 8
+      %11110111,    // 9
+      $00,          // 10
+      %11101111,    // 11
+      $00,          // 12
+      %11011111,    // 13
+      $00,          // 14
+      $00,          // 15
+      $00,          // 16
+      %10111111,    // 17
+      $00,          // 18
+      %01111111     // 19
+                       
+                       
+
+
+
