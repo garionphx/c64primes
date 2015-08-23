@@ -287,16 +287,8 @@ no_mask_carry:
     sta bit_index + 1
 
     // Are we done? We already have the byte we want in there, no need to load
-    cmp #>[end_bits - 1]
-    bcc r_we_done_2     // <, if its less than, skip the second test
-
-r_we_done:
-    lda bit_index
-
-    cmp #<[end_bits]
-    bcs find_next_num  // < Both of these mean we continue
-    
-
+    cmp #>[end_bits]
+    bcs r_we_done     // <, if its less than, skip the second test
 
 r_we_done_2:
 
@@ -309,6 +301,15 @@ r_we_done_2:
     sta (bit_index),y
 
     jmp add_loop
+
+r_we_done:
+    lda bit_index
+
+    cmp #<[end_bits]
+    bcs find_next_num  // < Both of these mean we continue
+    jmp r_we_done_2
+    
+
 
 find_next_num:
     // Find the bit/mask index for the curr num
@@ -350,7 +351,7 @@ no_mask_carry_2:
     cmp #$FF
     bne next_num_loop
 
-    // Store Y in the remainer
+    // Store X in the remainer
     stx curr_mask_index
     stx bit_mask_index
 
