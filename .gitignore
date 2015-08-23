@@ -1,0 +1,9 @@
+ass
+punter
+sim
+*.v*
+kick/
+primes.prg
+vice/
+x64.app
+.DS_Store
