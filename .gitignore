@@ -7,3 +7,6 @@ primes.prg
 vice/
 x64.app
 .DS_Store
+primes.d64
+primes.mon
+primes.sym

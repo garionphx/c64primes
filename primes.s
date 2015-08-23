@@ -293,7 +293,7 @@ no_mask_carry:
 r_we_done:
     lda bit_index
 
-    cmp #<[end_bits + 1]
+    cmp #<[end_bits]
     bcs find_next_num  // < Both of these mean we continue
     
 
@@ -434,21 +434,27 @@ multi_loop:
     // Have we hit the square root?
     lda curr +1
     cmp #$03
-    bcc b_we_done_2   // <, if its less than, skip the second test
+//    bcc b_we_done_2   // A<3, if its less than, skip the second test
+//    beq b_we_done     // =, need to do the second test
+//    jmp summit
+
     beq b_we_done     // =, need to do the second test
-    jmp summit
+    jmp next_number
 
 b_we_done:
     lda curr
-    cmp #$e8
-    bcc b_we_done_2  // < Both of these mean we continue
-    beq b_we_done_2  // = Both of these mean we continue
-    jmp summit
+//    cmp #$e8
+//    bcc b_we_done_2  // < Both of these mean we continue
+//    beq b_we_done_2  // = Both of these mean we continue
+//    jmp summit
+    
+    cmp #$e9
+    bcs summit
         
 b_we_done_2:
     jmp next_number
 
-break:
+//break:
 summit: 
     // Display the message
     lda #$17 // Y
@@ -505,15 +511,9 @@ no_mask_carry_3:
 
 r_we_done_3:
     lda curr_index
-//    cmp #<[end_bits - 1]
-//    bcc r_we_done_4  // < Both of these mean we continue
-//    beq r_we_done_4  // = Both of these mean we continue
-//    jmp end_prg
 
     cmp #<[end_bits]
     bcs end_prg  // < Both of these mean we continue
-
-
 
 r_we_done_4:
 
