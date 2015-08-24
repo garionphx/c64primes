@@ -9,9 +9,6 @@
 // curr_index:      curr / 20
 // curr_mask_index: curr % 20
 //
-//           __quotient__ | remainder
-//  divisor /  dividend
-//
 // index_adder = amount to add to the index when we go to the next number
 // mask_adder = amount to add to mask_index when we got to the next number
 //
@@ -50,18 +47,6 @@
 .var BIT3 = $fc
 
 .var calculating_location = $07b0
-
-//.var bit_mask = $87 // 20 bytes!
-
-.var divide_amount = $14
-
-// Stuff for divide routine
-.var divisor = $d8 // 2 bytes
-.var dividend = divisor + 2 // 4 bytes $da
-.var div_scratch = dividend + 4 // $de
-.var div_carry = div_scratch + 1  // $df
-.var quotient = dividend
-.var remainder = dividend + 2
 
 .var display_msg_work = $e0
 .var display_msg_ptr = $e3
@@ -151,11 +136,6 @@ copy_table:
     cpx #$14 // compare to 20
     bne copy_table
 
-    lda #divide_amount
-    sta divisor
-    lda #$00
-    sta divisor + 1
-
     // We know that 1 is not prime, so lets turn that bit off now.
     lda #$FE
     sta bits
@@ -215,6 +195,7 @@ next_number:
     bcc mask_adder_skip_carry_1
     sbc #$14
     sec  // Make sure the carry flag is set for the rol.
+
 mask_adder_skip_carry_1:
     sta mask_adder_1
     sta mask_adder_3
