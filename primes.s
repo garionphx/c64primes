@@ -260,19 +260,9 @@ break2:
     nop
     nop
     nop
-    nop
-    nop
 
 next_number:
     // Copy the number to the accum.
-    
-    lda bit_index
-    sta curr_index
-
-    lda bit_index  + 1
-    sec
-    sbc #>bits
-    sta curr_index + 1
     lda curr_mask_index
 
     // Now multiply curr_index and curr_mask_index by 2 to get the adders
@@ -423,92 +413,9 @@ no_mask_carry_2:
     sbc #>bits
     sta curr_index + 1
 
-    // Calc the number from the index and mask.
-    // First sub the offset from the curr_index + 1
-//    lda curr_index
-//    sta curr
-//
-//    lda #>bits
-//    sec
-//    sbc curr_index + 1
-//    sta curr_index + 1
-//    sta curr + 1
-//
-//    lda #$00
-//    sta curr + 2
-//    sta curr + 3
-//
-//    // Multiply by 16
-//    tax
-//    tay
-//multi_loop:
-//    asl curr   
-//    rol curr + 1
-//    rol curr + 2
-//    rol curr + 3
-//    inx
-//    cpx #$04
-//    bne multi_loop
-//
-//    // Times 4
-//    tya
-//    sta curr_index + 2
-//    asl curr_index
-//    rol curr_index + 1
-//    rol curr_index + 2
-//
-//    asl curr_index
-//    rol curr_index + 1
-//    rol curr_index + 2
-//
-//    // Add in the mask index
-//    clc
-//    lda curr_mask_index
-//    sta bit_mask_index
-//    adc curr_index
-//    sta curr_index
-//    tya
-//    adc curr_index + 1
-//    sta curr_index + 1
-//    tya
-//    adc curr_index + 2
-//    sta curr_index + 2
-//
-//
-//    // Now add'em
-//    clc
-//    lda curr
-//    adc curr_index
-//    sta curr
-//
-//    lda curr + 1
-//    adc curr_index + 1
-//    sta curr + 1
-//
-//    lda curr_index + 2
-//    adc curr + 2
-//    sta curr + 2
-//
-//    // Display something
-//    jsr display_curr
-
-    // Have we hit the square root?
-//    lda curr +1
-lda curr_index
-
-//    cmp #$03
-//
-//    beq b_we_done     // =, need to do the second test
-//    jmp next_number
-//
-//b_we_done:
-////    lda curr
-//lda curr_index
-//    
-//    cmp #$e9
-//    bcs summit
-
-    cmp #$32
+    // Are we done?
+    lda curr_index
+    cmp #$32            // $32 is the quotient of 1000 / 20.
     bcs summit
     jmp next_number
         
