@@ -14,6 +14,9 @@
 //
 // index_adder = amount to add to the index when we go to the next number
 // mask_adder = amount to add to mask_index when we got to the next number
+//
+// bit_index = The physical address of the bits. (bits_index - bits = curr_index)
+
 
 .pc = $0801 "Basic upstart"
 :BasicUpstart(start)
@@ -163,6 +166,7 @@ copy_table:
 
     lda #$03
     sta bit_mask_index
+    sta curr_mask_index
 
     lda #>bits
     sta bit_index + 1
@@ -175,6 +179,9 @@ copy_table:
     sta curr + 2
     sta curr + 3
     sta curr + 4
+    sta curr_index 
+    sta curr_index + 1
+
 
     // Display the message
     lda #$17 // Y
@@ -188,39 +195,19 @@ copy_table:
     lda #>calculating_msg
     pha
     
-break2:
     jsr display_msg
 
 next_number:
     // Copy the number to the accum.
     
-    // Add the 'curr' to the accum num to get a 2x of the curr in 
-    // accum. Store that in adder_1, adder_3 and adder_4
-    lda curr
-    sta dividend
-
-    lda curr + 1
-    sta dividend + 1
-
-    lda curr + 2
-    sta dividend + 2
-
-    // Save these so that they are zero
-    lda #$00
-    sta dividend + 3
-
-    // Take the current number and divide by 20
-    jsr divide
-
-    // Save the quotient to the curr_index, for later use
-    lda quotient
+    lda bit_index
     sta curr_index
-    lda quotient + 1
-    sta curr_index + 1
 
-    // Save the remainder to the curr_mask_index, for later use
-    lda remainder 
-    sta curr_mask_index
+    lda bit_index  + 1
+    sec
+    sbc #>bits
+    sta curr_index + 1
+    lda curr_mask_index
 
     // Now multiply curr_index and curr_mask_index by 2 to get the adders
     asl // remainder
@@ -232,12 +219,12 @@ mask_adder_skip_carry_1:
     sta mask_adder_1
     sta mask_adder_3
     sta mask_adder_4
-    lda quotient
+    lda curr_index
     rol
     sta index_adder_low_1    
     sta index_adder_low_3    
     sta index_adder_low_4    
-    lda quotient + 1
+    lda curr_index + 1
     rol
     sta index_adder_high_1  
     sta index_adder_high_3  
@@ -633,47 +620,6 @@ get_hex:
     lda print_table,x
     sta hex_lo
     rts
-
-divide:  
-        ldx     #$11    // over at the same time as shifting the answer in, the
-                        // operation must start AND finish with a shift of the
-                        // low cell of the dividend (which ends up holding the
-                        // quotient), so we start with 17 (11H) in X.
-        clc
-div_loop:  
-        lda     #$00
-        sta     div_carry       // Zero old bits of CARRY so subtraction works right.
-
-        rol     divisor+2       // -JMS- Move low cell of dividend left one bit, also shifting
-        rol     divisor+3       // -JMS- answer in. The 1st rotation brings in a 0, which later
-
-                                // gets pushed off the other end in the last rotation.
-        dex                     //
-        beq     div_end         // Branch to the end if finished.
-                                //
-        rol     divisor+4       // -JMS- Shift high cell of dividend left one bit, also
-        rol     div_carry       // Store old high bit of dividend in CARRY.  (For STZ
-                                // one line up, NMOS 6502 will need LDA #0, STA CARRY.)
-            
-        sec                     // See if divisor will fit into high 17 bits of dividend
-        lda     divisor+4       // -JMS- by subtracting and then looking at carry flag.
-        sbc     divisor         // First do low byte.
-        sta     divisor+6       // Save difference low byte until we know if we need it.
-        lda     div_carry       // Bit 0 of CARRY serves as 17th bit.
-        sbc     #$0             // Complete the subtraction by doing the 17th bit before
-        bcc     div_loop        // determining if the divisor fit into the high 17 bits
-                                // of the dividend.  If so, the carry flag remains set.
-        lda     divisor+6       // If divisor fit into dividend high 17 bits, update
-        sta     divisor+4       // -JMS- dividend high cell to what it would be after
-        bcs     div_loop
-oflo: 
-        lda     #$FF            // If overflow occurred, put FF
-        sta     divisor+2       // in remainder low byte
-        sta     divisor+3       // and high byte,
-        sta     divisor+4       // and in quotient low byte
-        sta     divisor+5       // and high byte.
-
-div_end:rts
 
 display_ret:
 .byte 0, 0 
