@@ -188,6 +188,7 @@ copy_table:
     lda #>calculating_msg
     pha
     
+break2:
     jsr display_msg
 
 next_number:
@@ -338,24 +339,19 @@ next_num_loop:
     inx                         // 2
     inx                         // 2
     cpx #$14                    // 2
-    bcc no_mask_carry_2         // 2
+    bcc no_mask_carry_2         // 2, 3 on branch
 
     // No clc needed here
     txa                         // 2
     sbc #$14                    // 2
     tax                         // 2
 
-    lda curr_index
-    adc #$00
-    sta curr_index
-
-    lda curr_index + 1
-    adc #$00
-    sta curr_index + 1
+    inc curr_index
+    bne no_mask_carry_2
+    inc curr_index + 1
 
 no_mask_carry_2:
     lda bit_mask, X
-    beq next_num_loop // skip 0's
 
     // Now check the bit in that location
     ldy #$00
@@ -461,7 +457,7 @@ b_we_done:
 b_we_done_2:
     jmp next_number
 
-//break:
+break:
 summit: 
     // Display the message
     lda #$17 // Y
@@ -504,10 +500,9 @@ next_num_loop_2:
     txa
     sbc #$14
     tax
-    lda curr_index
-    adc #$00
-    sta curr_index
-    bcc no_mask_carry_3
+
+    inc curr_index
+    bne no_mask_carry_3
     inc curr_index + 1
 
 no_mask_carry_3:
