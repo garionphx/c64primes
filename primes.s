@@ -175,7 +175,9 @@ copy_table:
     lda #>calculating_msg
     pha
     
+break2:
     jsr display_msg
+
 
 next_number:
     // Copy the number to the accum.
@@ -294,7 +296,7 @@ r_we_done:
     jmp set_the_bit
     
 find_next_num:
-    // Find the bit/mask index for the curr num
+    // Find the bit/mask index for the curr num. The next prime to sieve.
     clc
     lda #>bits
     adc curr_index + 1
@@ -328,7 +330,7 @@ no_mask_carry_2:
     cmp #$FF
     bne next_num_loop
 
-    // Store X in the remainer
+    // Store the data for the next loop
     stx curr_mask_index
     stx bit_mask_index
 
@@ -339,15 +341,15 @@ no_mask_carry_2:
 
     // Calc the number from the index and mask.
     // First sub the offset from the curr_index + 1
+    lda curr_index
+    sta curr
+
     lda #>bits
     sec
     sbc curr_index + 1
     sta curr_index + 1
-
-    lda curr_index
-    sta curr
-    lda curr_index + 1
     sta curr + 1
+
     lda #$00
     sta curr + 2
     sta curr + 3
