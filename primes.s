@@ -99,16 +99,15 @@ clear_screen:
     bne clear_screen
 
     // Display the message
-    lda #$17 // Y
-    pha
-    lda #$0a // X
-    pha
+    ldy #$17 // Y
+    ldx #$0a // X
+    
     lda #[clearing_memory_msg_end - clearing_memory_msg] // length
-    pha
+    sta display_msg_work + 2 // Length
     lda #<clearing_memory_msg
-    pha
+    sta display_msg_work
     lda #>clearing_memory_msg
-    pha
+    sta display_msg_work + 1
     
     jsr display_msg
 
@@ -141,9 +140,6 @@ copy_table:
     sta bits
 
     // Some initialization
-    lda #$00
-    sta bit_index
-
     lda #$03
     sta bit_mask_index
     sta curr_mask_index
@@ -161,23 +157,111 @@ copy_table:
     sta curr + 4
     sta curr_index 
     sta curr_index + 1
-
+    sta bit_index
 
     // Display the message
-    lda #$17 // Y
-    pha
-    lda #$0a // X
-    pha
-    lda #[calculating_msg_end - calculating_msg] // length
-    pha
-    lda #<calculating_msg
-    pha
-    lda #>calculating_msg
-    pha
+    ldy #$17 // Y
+    ldx #$0a // X
     
+    lda #[calculating_msg_end - calculating_msg] // length
+    sta display_msg_work + 2 // Length
+    lda #<calculating_msg
+    sta display_msg_work
+    lda #>calculating_msg
+    sta display_msg_work + 1
+
+
 break2:
     jsr display_msg
 
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
 
 next_number:
     // Copy the number to the accum.
@@ -335,106 +419,112 @@ no_mask_carry_2:
     sta bit_index
     lda curr_index + 1
     sta bit_index   + 1
+    sec
+    sbc #>bits
+    sta curr_index + 1
 
     // Calc the number from the index and mask.
     // First sub the offset from the curr_index + 1
-    lda curr_index
-    sta curr
-
-    lda #>bits
-    sec
-    sbc curr_index + 1
-    sta curr_index + 1
-    sta curr + 1
-
-    lda #$00
-    sta curr + 2
-    sta curr + 3
-
-    // Multiply by 16
-    tax
-    tay
-multi_loop:
-    asl curr   
-    rol curr + 1
-    rol curr + 2
-    rol curr + 3
-    inx
-    cpx #$04
-    bne multi_loop
-
-    // Times 4
-    tya
-    sta curr_index + 2
-    asl curr_index
-    rol curr_index + 1
-    rol curr_index + 2
-
-    asl curr_index
-    rol curr_index + 1
-    rol curr_index + 2
-
-    // Add in the mask index
-    clc
-    lda curr_mask_index
-    sta bit_mask_index
-    adc curr_index
-    sta curr_index
-    tya
-    adc curr_index + 1
-    sta curr_index + 1
-    tya
-    adc curr_index + 2
-    sta curr_index + 2
-
-
-    // Now add'em
-    clc
-    lda curr
-    adc curr_index
-    sta curr
-
-    lda curr + 1
-    adc curr_index + 1
-    sta curr + 1
-
-    lda curr_index + 2
-    adc curr + 2
-    sta curr + 2
-
-    // Display something
-    jsr display_curr
+//    lda curr_index
+//    sta curr
+//
+//    lda #>bits
+//    sec
+//    sbc curr_index + 1
+//    sta curr_index + 1
+//    sta curr + 1
+//
+//    lda #$00
+//    sta curr + 2
+//    sta curr + 3
+//
+//    // Multiply by 16
+//    tax
+//    tay
+//multi_loop:
+//    asl curr   
+//    rol curr + 1
+//    rol curr + 2
+//    rol curr + 3
+//    inx
+//    cpx #$04
+//    bne multi_loop
+//
+//    // Times 4
+//    tya
+//    sta curr_index + 2
+//    asl curr_index
+//    rol curr_index + 1
+//    rol curr_index + 2
+//
+//    asl curr_index
+//    rol curr_index + 1
+//    rol curr_index + 2
+//
+//    // Add in the mask index
+//    clc
+//    lda curr_mask_index
+//    sta bit_mask_index
+//    adc curr_index
+//    sta curr_index
+//    tya
+//    adc curr_index + 1
+//    sta curr_index + 1
+//    tya
+//    adc curr_index + 2
+//    sta curr_index + 2
+//
+//
+//    // Now add'em
+//    clc
+//    lda curr
+//    adc curr_index
+//    sta curr
+//
+//    lda curr + 1
+//    adc curr_index + 1
+//    sta curr + 1
+//
+//    lda curr_index + 2
+//    adc curr + 2
+//    sta curr + 2
+//
+//    // Display something
+//    jsr display_curr
 
     // Have we hit the square root?
-    lda curr +1
-    cmp #$03
+//    lda curr +1
+lda curr_index
 
-    beq b_we_done     // =, need to do the second test
-    jmp next_number
+//    cmp #$03
+//
+//    beq b_we_done     // =, need to do the second test
+//    jmp next_number
+//
+//b_we_done:
+////    lda curr
+//lda curr_index
+//    
+//    cmp #$e9
+//    bcs summit
 
-b_we_done:
-    lda curr
-    
-    cmp #$e9
+    cmp #$32
     bcs summit
-        
-b_we_done_2:
     jmp next_number
-
+        
 break:
 summit: 
     // Display the message
-    lda #$17 // Y
-    pha
-    lda #$0a // X
-    pha
+    ldy #$17 // Y
+    ldx #$0a // X
+    
     lda #[summing_msg_end - summing_msg] // length
-    pha
+    sta display_msg_work + 2 // Length
     lda #<summing_msg
-    pha
+    sta display_msg_work
     lda #>summing_msg
-    pha
-   
+    sta display_msg_work + 1
+
     jsr display_msg   
    
     // Sum things together.
@@ -602,21 +692,6 @@ display_ret:
 .byte 0, 0 
 
 display_msg:
-    pla 
-    sta display_ret
-    pla 
-    sta display_ret + 1
-    pla 
-    sta display_msg_work + 1
-    pla 
-    sta display_msg_work
-    pla 
-    sta display_msg_work + 2 // Length
-    pla 
-    tax
-    pla
-    tay
-
     lda #$04
     sta display_msg_ptr + 1
     lda #$00
@@ -653,10 +728,6 @@ write_to_screen:
     cpy display_msg_work + 2
     bne write_to_screen
 
-    lda display_ret + 1
-    pha
-    lda display_ret
-    pha
     rts
 
 index_and_mask_to_hex:
