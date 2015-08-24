@@ -196,7 +196,6 @@ next_number:
     cmp #$14        
     bcc mask_adder_skip_carry_1
     sbc #$14
-    sec  // Make sure the carry flag is set for the rol.
 
 mask_adder_skip_carry_1:
     sta mask_adder_1
@@ -218,7 +217,6 @@ mask_adder_skip_carry_1:
     cmp #$14        
     bcc mask_adder_skip_carry_2
     sbc #$14
-    sec  // Make sure the carry flag is set for the rol.
 mask_adder_skip_carry_2:
     sta mask_adder_2
     lda index_adder_low_1
@@ -236,7 +234,6 @@ mask_adder_skip_carry_2:
     ldy #$00
 
 add_loop:
-
     // Determine which adder we're using.
     inc adder_index
 
@@ -355,7 +352,8 @@ no_mask_carry_2:
     sta curr + 3
 
     // Multiply by 16
-    ldx #$00
+    tax
+    tay
 multi_loop:
     asl curr   
     rol curr + 1
@@ -366,7 +364,7 @@ multi_loop:
     bne multi_loop
 
     // Times 4
-    lda #$00
+    tya
     sta curr_index + 2
     asl curr_index
     rol curr_index + 1
@@ -382,10 +380,10 @@ multi_loop:
     sta bit_mask_index
     adc curr_index
     sta curr_index
-    lda #$00
+    tya
     adc curr_index + 1
     sta curr_index + 1
-    lda #$00
+    tya
     adc curr_index + 2
     sta curr_index + 2
 
@@ -403,10 +401,6 @@ multi_loop:
     lda curr_index + 2
     adc curr + 2
     sta curr + 2
-
-    lda #$00     // continue in case we carry?
-    adc curr + 3
-    sta curr + 3
 
     // Display something
     jsr display_curr
