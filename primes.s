@@ -3,6 +3,18 @@
 // A basic loader. Generates:
 //      10 SYS (2064)
 
+// Notes:
+//
+// curr:            stores the current prime we're working with
+// curr_index:      curr / 20
+// curr_mask_index: curr % 20
+//
+//           __quotient__ | remainder
+//  divisor /  dividend
+//
+// index_adder = amount to add to the index when we go to the next number
+// mask_adder = amount to add to mask_index when we got to the next number
+
 .pc = $0801 "Basic upstart"
 :BasicUpstart(start)
 
@@ -17,10 +29,14 @@
 .var bit_mask_index = $41
 .var bit_index = $43
 
-.var index_adder_1 = $57
-.var index_adder_2 = $59
-.var index_adder_3 = $5b
-.var index_adder_4 = $5d
+.var index_adder_low_1 = $57
+.var index_adder_low_2 = $58
+.var index_adder_low_3 = $59
+.var index_adder_low_4 = $5a
+.var index_adder_high_1 = $5b
+.var index_adder_high_2 = $5c
+.var index_adder_high_3 = $5d
+.var index_adder_high_4 = $5e
 
 .var mask_adder_1 = $5f
 .var mask_adder_2 = $60
@@ -217,14 +233,14 @@ mask_adder_skip_carry_1:
     sta mask_adder_4
     lda quotient
     rol
-    sta index_adder_1    
-    sta index_adder_3    
-    sta index_adder_4    
+    sta index_adder_low_1    
+    sta index_adder_low_3    
+    sta index_adder_low_4    
     lda quotient + 1
     rol
-    sta index_adder_1 + 1   
-    sta index_adder_3 + 1   
-    sta index_adder_4 + 1   
+    sta index_adder_high_1  
+    sta index_adder_high_3  
+    sta index_adder_high_4  
     
     lda mask_adder_1
     asl // remainder
@@ -234,18 +250,22 @@ mask_adder_skip_carry_1:
     sec  // Make sure the carry flag is set for the rol.
 mask_adder_skip_carry_2:
     sta mask_adder_2
-    lda index_adder_1
+    lda index_adder_low_1
     rol
-    sta index_adder_2    
-    lda index_adder_1 + 1
+    sta index_adder_low_2    
+    lda index_adder_high_1
     rol
-    sta index_adder_2 + 1   
+    sta index_adder_high_2    
     
     // Now we have our adders. Lets start adding.
     lda #$FF
+
     sta adder_index
 
+    ldy #$00
+
 add_loop:
+
     // Determine which adder we're using.
     inc adder_index
 
@@ -255,8 +275,6 @@ add_loop:
 
     // Store this, its for the index_adder
     tax
-    asl // multiple by 2
-    tay // store it temporarily
 
     // Figure out the mask_index
     // No need for clc here.
@@ -270,47 +288,42 @@ add_loop:
     // Yes, subtract 20 from this, and carry to the bit_index
     // Note that carry flag is set here. 
     sbc #$14           // Let the carry flag fall through to the adc bit_index after the no_mask_carry.
+    // Carry flag will be set here
 
 no_mask_carry:
     sta bit_mask_index
 
-    // Now figure out the bit_index
-    tya
-    tax
-
     // We don't want to clc here, since it may fall from the sbc above.
-    lda index_adder_1, X
+    lda index_adder_low_1, X
     adc bit_index
     sta bit_index
-    lda index_adder_1 + 1, X
+    lda index_adder_high_1, X
     adc bit_index + 1
     sta bit_index + 1
 
     // Are we done? We already have the byte we want in there, no need to load
     cmp #>[end_bits]
-    bcs r_we_done     // <, if its less than, skip the second test
+    bcs r_we_done     // if >=, check the lower byte
 
-r_we_done_2:
+set_the_bit:
 
     // We now have the index we need, and an offset to our bit mask. Turn that 
     // bit off.
-    ldy #$00
-    ldx bit_mask_index
-    lda bit_mask,X
-    and (bit_index),y
-    sta (bit_index),y
+    ldx bit_mask_index  // WHich of the masks we are using
+    lda bit_mask,X      // Load that mask
+    and (bit_index),y   // Add it with the data pointed to by bit_index
+    sta (bit_index),y   // Store the updated data
 
     jmp add_loop
 
 r_we_done:
+    // Check the lower byte.
     lda bit_index
 
     cmp #<[end_bits]
-    bcs find_next_num  // < Both of these mean we continue
-    jmp r_we_done_2
+    bcs find_next_num  // >=, then goto the next number
+    jmp set_the_bit
     
-
-
 find_next_num:
     // Find the bit/mask index for the curr num
     clc
@@ -435,19 +448,12 @@ multi_loop:
     // Have we hit the square root?
     lda curr +1
     cmp #$03
-//    bcc b_we_done_2   // A<3, if its less than, skip the second test
-//    beq b_we_done     // =, need to do the second test
-//    jmp summit
 
     beq b_we_done     // =, need to do the second test
     jmp next_number
 
 b_we_done:
     lda curr
-//    cmp #$e8
-//    bcc b_we_done_2  // < Both of these mean we continue
-//    beq b_we_done_2  // = Both of these mean we continue
-//    jmp summit
     
     cmp #$e9
     bcs summit
