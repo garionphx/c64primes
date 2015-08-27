@@ -309,11 +309,11 @@ mask_adder_skip_carry_2:
 
 add_loop:
     // Determine which adder we're using.
-    inc adder_index
+    inc adder_index                  // 5
 
     // Do the bin version first
-    lda adder_index
-    and #$03
+    lda adder_index                  // 3
+    and #$03                         // 2
 
     // Store this, its for the index_adder
     tax
@@ -323,7 +323,7 @@ add_loop:
     lda mask_adder_1, X
     adc bit_mask_index
 
-    // Are we >= 20
+    // Are we >= 20                                                   
     cmp #$14  
     bcc no_mask_carry  
 
@@ -361,10 +361,8 @@ set_the_bit:
 r_we_done:
     // Check the lower byte.
     lda bit_index
-
     cmp #<[end_bits]
-    bcs find_next_num  // >=, then goto the next number
-    jmp set_the_bit
+    bcc set_the_bit
     
 find_next_num:
     // Find the bit/mask index for the curr num. The next prime to sieve.
