@@ -327,11 +327,10 @@ no_mask_carry:
     lda index_adder_1, X
     adc bit_index
     sta bit_index
-    tya                 // 2  We know that we'll never carry, and Y always is 0.
-    adc bit_index + 1   // 3
-    sta bit_index + 1   // 3
-
-
+    bcc skip_carry        // 3
+    inc bit_index+1       // 5
+skip_carry:              
+    lda bit_index+1       // 3
 
     // Are we done? We already have the byte we want in there, no need to load
     cmp #>[end_bits]
