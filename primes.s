@@ -29,14 +29,10 @@
 .var bit_mask_index = $41
 .var bit_index = $43
 
-.var index_adder_low_1 = $57
-.var index_adder_low_2 = $58
-.var index_adder_low_3 = $59
-.var index_adder_low_4 = $5a
-.var index_adder_high_1 = $5b
-.var index_adder_high_2 = $5c
-.var index_adder_high_3 = $5d
-.var index_adder_high_4 = $5e
+.var index_adder_1 = $57
+.var index_adder_2 = $58
+.var index_adder_3 = $59
+.var index_adder_4 = $5a
 
 .var mask_adder_1 = $5f
 .var mask_adder_2 = $60
@@ -277,14 +273,9 @@ mask_adder_skip_carry_1:
     sta mask_adder_4
     lda curr_index
     rol
-    sta index_adder_low_1    
-    sta index_adder_low_3    
-    sta index_adder_low_4    
-    lda curr_index + 1
-    rol
-    sta index_adder_high_1  
-    sta index_adder_high_3  
-    sta index_adder_high_4  
+    sta index_adder_1    
+    sta index_adder_3    
+    sta index_adder_4    
     
     lda mask_adder_1
     asl // remainder
@@ -293,12 +284,9 @@ mask_adder_skip_carry_1:
     sbc #$14
 mask_adder_skip_carry_2:
     sta mask_adder_2
-    lda index_adder_low_1
+    lda index_adder_1
     rol
-    sta index_adder_low_2    
-    lda index_adder_high_1
-    rol
-    sta index_adder_high_2    
+    sta index_adder_2    
     
     // Now we have our adders. Lets start adding.
     lda #$FF
@@ -336,12 +324,14 @@ no_mask_carry:
     sta bit_mask_index
 
     // We don't want to clc here, since it may fall from the sbc above.
-    lda index_adder_low_1, X
+    lda index_adder_1, X
     adc bit_index
     sta bit_index
-    lda index_adder_high_1, X
-    adc bit_index + 1
-    sta bit_index + 1
+    tya                 // 2  We know that we'll never carry, and Y always is 0.
+    adc bit_index + 1   // 3
+    sta bit_index + 1   // 3
+
+
 
     // Are we done? We already have the byte we want in there, no need to load
     cmp #>[end_bits]
@@ -379,7 +369,7 @@ next_num_loop:
     inx                         // 2
     cpx #$14                    // 2
     bcc no_mask_carry_2         // 2, 3 on branch
-
+    
     // No clc needed here
     txa                         // 2
     sbc #$14                    // 2
@@ -393,7 +383,6 @@ no_mask_carry_2:
     lda bit_mask, X
 
     // Now check the bit in that location
-    ldy #$00
     ora (curr_index), Y
 
     cmp #$FF
@@ -403,16 +392,15 @@ no_mask_carry_2:
     stx curr_mask_index
     stx bit_mask_index
 
-    lda curr_index
-    sta bit_index
     lda curr_index + 1
-    sta bit_index   + 1
+    sta bit_index  + 1
     sec
     sbc #>bits
     sta curr_index + 1
 
     // Are we done?
     lda curr_index
+    sta bit_index
     cmp #$32            // $32 is the quotient of 1000 / 20.
     bcs summit
     jmp next_number
