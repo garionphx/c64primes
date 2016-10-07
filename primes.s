@@ -252,12 +252,6 @@ break2:
     nop
     nop
     nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
 
 next_number:
     // Copy the number to the accum.
@@ -300,10 +294,9 @@ add_loop:
     // Determine which adder we're using.
     tsx // 2
     inx // 2
-    lda #$03
-    axs #$00
-    clc
-
+    txa
+    and #$03
+    tax
     txs // 2
 
     // Figure out the mask_index
@@ -324,9 +317,10 @@ no_mask_carry:
     sta bit_mask_index
 
     // We don't want to clc here, since it may fall from the sbc above.
-    lda index_adder_1, X
-    adc bit_index
-    sta bit_index
+    tya
+    adc index_adder_1, X
+    tay
+
     bcc skip_carry        // 3
     inc bit_index+1       // 5
 skip_carry:              
@@ -337,7 +331,6 @@ skip_carry:
     bcs r_we_done     // if >=, check the lower byte
 
 set_the_bit:
-
     // We now have the index we need, and an offset to our bit mask. Turn that 
     // bit off.
     ldx bit_mask_index  // WHich of the masks we are using
@@ -349,8 +342,7 @@ set_the_bit:
 
 r_we_done:
     // Check the lower byte.
-    lda bit_index
-    cmp #<[end_bits]
+    cpy #<[end_bits]
     bcc set_the_bit
     
 find_next_num:
@@ -362,6 +354,8 @@ find_next_num:
 
     // curr_mask_index has the mask index
     ldx curr_mask_index
+
+    ldy #$00
 
 next_num_loop:
     inx                         // 2
@@ -401,6 +395,7 @@ no_mask_carry_2:
     lda curr_index
     sta bit_index
     cmp #$32            // $32 is the quotient of 1000 / 20.
+
     bcs summit
     jmp next_number
         
