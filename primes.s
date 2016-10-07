@@ -25,7 +25,7 @@
 .var curr_index = $1e
 .var curr_mask_index = $21
 
-.var adder_index = $02
+.var screen_enable = $02
 .var bit_mask_index = $41
 .var bit_index = $43
 
@@ -166,17 +166,19 @@ copy_table:
     lda #>calculating_msg
     sta display_msg_work + 1
 
+    tsx
+    txa
+    pha
 
 break2:
     jsr display_msg
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    // Turn off the screen
+    lda $d011
+    sta screen_enable
+    lda #$00
+    sta $d011
+
     nop
     nop
     nop
@@ -289,22 +291,20 @@ mask_adder_skip_carry_2:
     sta index_adder_2    
     
     // Now we have our adders. Lets start adding.
-    lda #$FF
-
-    sta adder_index
+    ldx #$ff        // 2
+    txs             // 2
 
     ldy #$00
 
 add_loop:
     // Determine which adder we're using.
-    inc adder_index                  // 5
+    tsx // 2
+    inx // 2
+    lda #$03
+    axs #$00
+    clc
 
-    // Do the bin version first
-    lda adder_index                  // 3
-    and #$03                         // 2
-
-    // Store this, its for the index_adder
-    tax
+    txs // 2
 
     // Figure out the mask_index
     // No need for clc here.
@@ -342,7 +342,7 @@ set_the_bit:
     // bit off.
     ldx bit_mask_index  // WHich of the masks we are using
     lda bit_mask,X      // Load that mask
-    and (bit_index),y   // Add it with the data pointed to by bit_index
+    and (bit_index),y   // And it with the data pointed to by bit_index
     sta (bit_index),y   // Store the updated data
 
     jmp add_loop
@@ -406,6 +406,9 @@ no_mask_carry_2:
         
 break:
 summit: 
+    lda screen_enable
+    sta $d011
+
     // Display the message
     ldy #$17 // Y
     ldx #$0a // X
@@ -531,9 +534,13 @@ end_prg:
     inx
     bne copy_zp_3
 
+    pla
+    tax
+    txs
+
     // Renable the io page and basic.
-    lda #$37
-    sta $01
+    //lda #$37
+    //sta $01
     cli
     rts
 
